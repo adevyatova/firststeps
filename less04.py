@@ -56,11 +56,11 @@ try:
 except ValueError:
     print("Вы не ввели необходимые данные")
 else:
-    pattern_name = '^[А-Я][а-я]+'
+    pattern_name = '^[А-ЯЁ][а-яё]+$'
     pattern_email = '^[a-z0-9_]+@[a-z]+\.(ru|org|com)$'
     if re.match(pattern_name,name) is None:
         print("Неправильный формат имени")
-    if re.match(pattern_name,name) is None:
+    if re.match(pattern_name,surname) is None:
         print("Неправильный формат фамилии")
     if re.search(pattern_email,email) is None:
         print("Электронный адрес неверен")
@@ -104,7 +104,7 @@ some_str = '''
 # более одной точки, при любом исходе сообщите результат пользователю!
 
 print("Задание 2.2")
-pattern = '\.\.+'
+pattern = '\.{2,}'
 print(re.findall(pattern,some_str))
 
 #hard
@@ -141,6 +141,8 @@ def check_account(person):
 
 
 def withdraw_money(person, money):
+    if money <= 0:
+        print("Вы ввели некорректную сумму для снятия")
     if person['money'] - money >= 0:
         person['money'] -= money
         return 'Вы сняли {} рублей.'.format(money)
@@ -166,15 +168,19 @@ def start():
         pin_code = int(pin_code)
         person = get_person_by_card(card_number)
         while person and is_pin_valid(person, pin_code):
+            try:
                 choice = int(input('Выберите пункт:\n'
                                    '1. Проверить баланс\n'
                                    '2. Снять деньги\n'
                                    '3. Выход\n'
                                    '---------------------\n'
                                    'Ваш выбор:'))
-                if choice == 3:
-                    break
-                process_user_choice(choice, person)
+            except ValueError:
+                print("Неверный ввод")
+                continue
+            if choice == 3:
+                break
+            process_user_choice(choice, person)
         else:
             print('Номер карты или пин код введены не верно!')
 
