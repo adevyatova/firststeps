@@ -18,31 +18,43 @@ import less05_easy as f
 # оформленные в виде соответствующих функций,
 # и импортированные в данный файл из easy.py
 
-while len(sys.argv) > 1:
-    if '1' in sys.argv:
-        dir_name = input('Введите имя директории:')
-        try:
-            os.chdir(dir_name)
-        except FileNotFoundError:
-            print('Директория не найдена')
-        break
-    if '2' in sys.argv:
-        f.show_dir()
-        break
-    if '3' in sys.argv:
-        dir_name = input('Введите имя директории:')
-        dir_path = os.path.join(os.getcwd(), dir_name)
-        f.remove_dir(dir_name,dir_path)
-        break
-    if '4' in sys.argv:
-        dir_name = input('Введите имя директории:')
-        dir_path = os.path.join(os.getcwd(), dir_name)
-        f.make_dir(dir_name,dir_path)
-        break
-else:
-    print('Вы не задали параметр скрипта\n'
-          'Выберите действие:\n'
-          '1. Перейти в папку\n'
-          '2. Просмотреть содержимое текущей папки\n'
-          '3. Удалить папку\n'
-          '4. Создать папку')
+
+def change_dir(folder):
+    try:
+        os.chdir(folder)
+        print('Успешно перешел в папку')
+    except FileNotFoundError:
+        print('Переход в заданную папку невозможен, ее не существует!')
+
+
+do = {
+    1: change_dir,
+    2: f.show_dir,
+    3: f.remove_dir,
+    4: f.make_dir
+}
+
+while True:
+    choice = input('Выберите действие:\n'
+                    '1. Перейти в папку\n'
+                    '2. Просмотреть содержимое текущей папки\n'
+                    '3. Удалить папку\n'
+                    '4. Создать папку\n'
+                    '5. Выход\n\n')
+
+    try:
+        if len(choice.split()) == 2:  # Если нам передали более 1 пользовательских аргумента
+            choice, folder_name = choice.split()
+            choice = int(choice)
+            if do.get(choice):
+                do[choice](folder_name)
+        else:  # Если передали 1 пользовательский аргумент
+            choice = int(choice)
+            if choice == 5:
+                break
+            elif do.get(choice):
+                print(do[choice]())
+    except ValueError:
+        print('ОШИБКА! Вы ввели не верные данные!\n')
+    except TypeError:
+        print('ОШИБКА! Вы не указали имя папки!\n')

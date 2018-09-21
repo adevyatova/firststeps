@@ -7,17 +7,22 @@ import os, sys, shutil
 # И второй скрипт, удаляющий эти папки.
 
 
-def make_dir(dir_name, dir_path):
+def make_dir(path):
     try:
-        os.mkdir(dir_path)
+        os.mkdir(path)
     except FileExistsError:
-        print('Директория {} уже существует'.format(dir_name))
-    print('Директория {} создана'.format(dir_name))
+        print('Директория {} уже существует'.format(path))
+    print('Директория {} создана'.format(path))
 
 
-def remove_dir(dir_name, dir_path):
-    os.rmdir(dir_path)
-    print('Директория {} удалена'.format(dir_name))
+def remove_dir(path):
+    try:
+        os.rmdir(path)
+        print('Директория {} удалена'.format(path))
+    except FileNotFoundError:
+        print('Директория для удаления не найдена.')
+    except PermissionError:
+        print('Недостаточно прав для удаления директории')
 
 # Задача-2:
 # Напишите скрипт, отображающий папки текущей директории.
@@ -42,11 +47,11 @@ def copy_curr_dir():
 
 if __name__ == '__main__':
     print("Задание 1.1")
-    for i in range(1, 10):
-        dir_name = 'dir_' + str(i)
-        dir_path = os.path.join(os.getcwd(), dir_name)
-        make_dir(dir_name, dir_path)
-        remove_dir(dir_name, dir_path)
+
+    dir_name = 'dir_{}'
+    [make_dir(dir_name.format(i)) for i in range(1, 10)]
+    [remove_dir(dir_name.format(i)) for i in range(1, 10)]
+
     print("Задание 1.2")
     show_dir()
     print("Задание 1.3")
